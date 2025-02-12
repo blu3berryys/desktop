@@ -1,5 +1,5 @@
 diff --git a/browser/components/tabbrowser/content/tabs.js b/browser/components/tabbrowser/content/tabs.js
-index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857a82ff94c 100644
+index 8aeb244ffca9f48661805f5b7d860b5896055562..ab0a6a6ed80608385b4663775b4edf67709dae7d 100644
 --- a/browser/components/tabbrowser/content/tabs.js
 +++ b/browser/components/tabbrowser/content/tabs.js
 @@ -94,7 +94,7 @@
@@ -101,7 +101,25 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
        ) {
          delete draggedTab._dragData;
          return;
-@@ -1512,9 +1525,18 @@
+@@ -1478,7 +1491,7 @@
+     }
+ 
+     get newTabButton() {
+-      return this.querySelector("#tabs-newtab-button");
++      return ZenWorkspaces.activeWorkspaceStrip.querySelector("#tabs-newtab-button");
+     }
+ 
+     get verticalMode() {
+@@ -1498,7 +1511,7 @@
+       if (this.#allTabs) {
+         return this.#allTabs;
+       }
+-      let children = Array.from(this.arrowScrollbox.children);
++      let children = Array.from(ZenWorkspaces.tabboxChildren);
+       // remove arrowScrollbox periphery element
+       children.pop();
+ 
+@@ -1512,14 +1525,28 @@
        }
  
        this.#allTabs = [
@@ -109,19 +127,43 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
 +        ...document.getElementById("zen-essentials-container").children, ...this.verticalPinnedTabsContainer.children,
          ...children,
        ];
++      const lastPinnedTabIdx = gBrowser.pinnedTabCount;
 +      for (let i = 0; i < this.#allTabs.length; i++) {
 +        // add glance tabs (tabs inside tabs) to the list
 +        const glanceTab = this.#allTabs[i].querySelector("tab[zen-glance-tab]");
 +        if (glanceTab) {
 +          // insert right after the parent tab
-+          this.#allTabs.splice(i + 1, 0, glanceTab);
++          this.#allTabs.splice(Math.min(i + 1, lastPinnedTabIdx), 0, glanceTab);
 +          i++;
++        } else if (this.#allTabs[i].classList.contains("vertical-pinned-tabs-container-separator")) {
++          // remove the separator from the list
++          this.#allTabs.splice(i, 1);
++          i--;
 +        }
 +      }
        return this.#allTabs;
      }
  
-@@ -1593,6 +1615,7 @@
+     get allGroups() {
+-      let children = Array.from(this.arrowScrollbox.children);
++      let children = Array.from(ZenWorkspaces.tabboxChildren);
+       return children.filter(node => node.tagName == "tab-group");
+     }
+ 
+@@ -1574,10 +1601,8 @@
+         return this.#focusableItems;
+       }
+ 
+-      let verticalPinnedTabsContainer = document.getElementById(
+-        "vertical-pinned-tabs-container"
+-      );
+-      let children = Array.from(this.arrowScrollbox.children);
++      let verticalPinnedTabsContainer = this.verticalPinnedTabsContainer;
++      let children = Array.from(ZenWorkspaces.tabboxChildren);
+ 
+       let focusableItems = [];
+       for (let child of children) {
+@@ -1593,6 +1618,7 @@
        }
  
        this.#focusableItems = [
@@ -129,7 +171,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
          ...verticalPinnedTabsContainer.children,
          ...focusableItems,
        ];
-@@ -1617,8 +1640,8 @@
+@@ -1617,8 +1643,8 @@
      #isContainerVerticalPinnedExpanded(tab) {
        return (
          this.verticalMode &&
@@ -140,7 +182,25 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
        );
      }
  
-@@ -1816,7 +1839,7 @@
+@@ -1633,7 +1659,7 @@
+ 
+       if (node == null) {
+         // We have a container for non-tab elements at the end of the scrollbox.
+-        node = this.arrowScrollbox.lastChild;
++        node = ZenWorkspaces.activeWorkspaceStrip.lastChild;
+       }
+ 
+       node.before(tab);
+@@ -1733,7 +1759,7 @@
+           // There are separate "new tab" buttons for horizontal tabs toolbar, vertical tabs and
+           // for when the tab strip is overflowed (which is shared by vertical and horizontal tabs);
+           // Attach the long click popup to all of them.
+-          const newTab = document.getElementById("new-tab-button");
++          const newTab = ZenWorkspaces.activeWorkspaceStrip.querySelector("#tabs-newtab-button");
+           const newTab2 = this.newTabButton;
+           const newTabVertical = document.getElementById(
+             "vertical-tabs-newtab-button"
+@@ -1816,7 +1842,7 @@
            let rect = ele => {
              return window.windowUtils.getBoundsWithoutFlushing(ele);
            };
@@ -149,7 +209,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
            if (tab && rect(tab).width <= this._tabClipWidth) {
              this.setAttribute("closebuttons", "activetab");
            } else {
-@@ -1832,6 +1855,7 @@
+@@ -1832,6 +1858,7 @@
          this.arrowScrollbox.ensureElementIsVisible(selectedTab, aInstant);
        }
  
@@ -157,7 +217,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
        selectedTab._notselectedsinceload = false;
      }
  
-@@ -1843,7 +1867,7 @@
+@@ -1843,7 +1870,7 @@
          return;
        }
  
@@ -166,7 +226,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
        if (!tabs.length) {
          return;
        }
-@@ -1879,7 +1903,7 @@
+@@ -1879,7 +1906,7 @@
          if (isEndTab && !this._hasTabTempMaxWidth) {
            return;
          }
@@ -175,7 +235,7 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
          // Force tabs to stay the same width, unless we're closing the last tab,
          // which case we need to let them expand just enough so that the overall
          // tabbar width is the same.
-@@ -1894,7 +1918,7 @@
+@@ -1894,7 +1921,7 @@
          let tabsToReset = [];
          for (let i = numPinned; i < tabs.length; i++) {
            let tab = tabs[i];
@@ -184,24 +244,39 @@ index 8aeb244ffca9f48661805f5b7d860b5896055562..ad28d73fe7cc6eadc4b4724c75d54857
            if (!isEndTab) {
              // keep tabs the same width
              tab.style.transition = "none";
-@@ -1963,13 +1987,13 @@
-       let verticalTabsContainer = document.getElementById(
-         "vertical-pinned-tabs-container"
-       );
--      let numPinned = gBrowser.pinnedTabCount;
-+      let numPinned = gBrowser._numVisiblePinTabs;
+@@ -1960,16 +1987,15 @@
+       // Move pinned tabs to another container when the tabstrip is toggled to vertical
+       // and when session restore code calls _positionPinnedTabs; update styling whenever
+       // the number of pinned tabs changes.
+-      let verticalTabsContainer = document.getElementById(
+-        "vertical-pinned-tabs-container"
+-      );
++      let verticalTabsContainer = this.verticalPinnedTabsContainer;
+       let numPinned = gBrowser.pinnedTabCount;
  
 -      if (gBrowser.pinnedTabCount !== verticalTabsContainer.children.length) {
 -        let tabs = this.visibleTabs;
-+      if (gBrowser.pinnedTabCount !== (verticalTabsContainer.children.length + document.getElementById("zen-essentials-container").children.length)) {
-+        let tabs = this.visibleTabs.filter(tab => !tab.hasAttribute("zen-glance-tab"));
++      ZenWorkspaces.makeSurePinTabIsInCorrectPosition();
++      if (gBrowser.pinnedTabCount !== (verticalTabsContainer.children.length - 1 + document.getElementById("zen-essentials-container").children.length)) {
++        let tabs = this.allTabs.filter(tab => !tab.hasAttribute("zen-glance-tab"));
          for (let i = 0; i < numPinned; i++) {
            tabs[i].style.marginInlineStart = "";
 -          verticalTabsContainer.appendChild(tabs[i]);
-+          tabs[i].hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(tabs[i]) : verticalTabsContainer.appendChild(tabs[i]);
++          tabs[i].hasAttribute("zen-essential") ? document.getElementById("zen-essentials-container").appendChild(tabs[i]) : verticalTabsContainer.insertBefore(tabs[i], verticalTabsContainer.lastChild);
          }
        }
  
+@@ -1977,9 +2003,7 @@
+     }
+ 
+     _resetVerticalPinnedTabs() {
+-      let verticalTabsContainer = document.getElementById(
+-        "vertical-pinned-tabs-container"
+-      );
++      let verticalTabsContainer = this.verticalPinnedTabsContainer;
+ 
+       if (!verticalTabsContainer.children.length) {
+         return;
 @@ -1992,8 +2016,8 @@
      }
  

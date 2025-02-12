@@ -84,7 +84,7 @@ pref('zen.theme.accent-color', "#ffb787");
 pref('zen.theme.content-element-separation', 6); // In pixels
 pref('zen.theme.pill-button', false);
 pref('zen.theme.gradient', true);
-pref('zen.theme.essentials-favicon-bg', false);
+pref('zen.theme.essentials-favicon-bg', true);
 
 pref('zen.tabs.show-newtab-vertical', true);
 pref('zen.view.show-newtab-button-border-top', false);
@@ -102,16 +102,10 @@ pref('zen.rice.share.notice.accepted', false);
 #ifdef XP_MACOSX
 pref('zen.theme.border-radius', 10); // In pixels
 #else
-#ifdef XP_WIN
-pref('zen.theme.border-radius', 12); // In pixels
-#else
 pref('zen.theme.border-radius', 8); // In pixels
-#endif
 #endif
 
 pref('zen.theme.color-prefs.use-workspace-colors', true);
-pref('zen.theme.color-prefs.amoled', false);
-pref('zen.theme.color-prefs.colorful', false);
 
 pref('zen.view.compact.hide-tabbar', true);
 pref('zen.view.compact.hide-toolbar', false);
@@ -124,6 +118,7 @@ pref('zen.view.compact.animate-sidebar', true);
 
 pref('zen.urlbar.replace-newtab', true);
 pref('zen.urlbar.behavior', 'floating-on-type'); // default, floating-on-type, float
+pref('zen.urlbar.wait-to-clear', 45000); // in ms (default 45s)
 
 #ifdef XP_MACOSX
 // Disable for macos in the meantime until @HarryHeres finds a solution for hight DPI screens
@@ -160,7 +155,6 @@ pref('zen.view.hide-window-controls', true);
 pref('zen.view.experimental-no-window-controls', false);
 
 pref('zen.tabs.dim-pending', true);
-pref('zen.tabs.newtab-on-middle-click', true);
 
 pref('zen.keyboard.shortcuts.enabled', true);
 pref('zen.keyboard.shortcuts.version', 0); // Empty string means default shortcuts
@@ -174,10 +168,10 @@ pref('zen.tab-unloader.excluded-urls', "example.com,example.org");
 
 pref('zen.pinned-tab-manager.debug', false);
 pref('zen.pinned-tab-manager.restore-pinned-tabs-to-pinned-url', false);
-pref('zen.pinned-tab-manager.close-shortcut-behavior', 'switch');
+pref('zen.pinned-tab-manager.close-shortcut-behavior', 'unload-switch');
 
-// Pref to enable the new profiles (TODO: Check this out!)
-//pref("browser.profiles.enabled", true);
+// TODO: Check this out!
+pref("browser.profiles.enabled", false);
 
 // Zen webpanels (calling it sidebar due to legacy reasons)
 pref('zen.sidebar.data', "{\"data\":\n {\"p1\":{\n   \"url\":\"https://www.wikipedia.org/\"\n  },\n\"p2\":{\n   \"url\":\"https://m.twitter.com/\",\n\"ua\": true\n  },\n\"p3\": {\n   \"url\": \"https://www.youtube.com/\",\n\"ua\": true\n},\n\"p4\": {\n   \"url\": \"https://translate.google.com/\",\n\"ua\": true\n},\n\"p5\": {\n   \"url\": \"https://todoist.com/\",\n\"ua\": true\n}},\n\"index\":[\"p1\",\"p2\",\"p3\",\"p4\",\"p5\"]}");
@@ -186,7 +180,6 @@ pref('zen.sidebar.close-on-blur', true);
 pref('zen.sidebar.max-webpanels', 8);
 
 // Zen Split View
-pref('zen.splitView.working', false);
 pref('zen.splitView.min-resize-width', 7);
 pref('zen.splitView.change-on-hover', false);
 pref('zen.splitView.rearrange-hover-size', 24);
@@ -384,6 +377,7 @@ pref("browser.urlbar.quicksuggest.enabled", false);
 pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
 pref("browser.urlbar.suggest.quicksuggest.nonsponsored", false);
 pref("browser.urlbar.groupLabels.enabled", false);
+pref("browser.urlbar.keepPanelOpenDuringImeComposition", true); // IMPORTANT: Fixes closing the urlbar when on some languages
 pref("browser.formfill.enable", false);
 pref("security.insecure_connection_text.enabled", true);
 pref("security.insecure_connection_text.pbmode.enabled", true);

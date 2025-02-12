@@ -472,6 +472,9 @@
             this._resetTabToStoredState(selectedTab);
           }
           if (behavior.includes('unload')) {
+            if (selectedTab.hasAttribute('glance-id')) {
+              break;
+            }
             gBrowser.explicitUnloadTabs([selectedTab]);
             selectedTab.removeAttribute('linkedpanel');
           }
@@ -644,7 +647,8 @@
     }
 
     moveToAnotherTabContainerIfNecessary(event, draggedTab) {
-      const pinnedTabsTarget = event.target.closest('#vertical-pinned-tabs-container');
+      const pinnedTabsTarget =
+        event.target.closest('#vertical-pinned-tabs-container') || event.target.closest('.zen-current-workspace-indicator');
       const essentialTabsTarget = event.target.closest('#zen-essentials-container');
       const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
 
@@ -713,6 +717,7 @@
     removeTabContainersDragoverClass() {
       this.dragIndicator.remove();
       this._dragIndicator = null;
+      ZenWorkspaces.activeWorkspaceIndicator.removeAttribute('open');
     }
 
     get dragIndicator() {
@@ -733,6 +738,12 @@
       const essentialTabsTarget = event.target.closest('#zen-essentials-container');
       const tabsTarget = event.target.closest('#tabbrowser-arrowscrollbox');
       const targetTab = event.target.closest('.tabbrowser-tab');
+      if (event.target.closest('.zen-current-workspace-indicator')) {
+        this.removeTabContainersDragoverClass();
+        ZenWorkspaces.activeWorkspaceIndicator.setAttribute('open', true);
+      } else {
+        ZenWorkspaces.activeWorkspaceIndicator.removeAttribute('open');
+      }
 
       // If there's no valid target tab, nothing to do
       if (!targetTab) {
