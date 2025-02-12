@@ -126,8 +126,7 @@
   width: 98%;
   transition: margin 0.2s ease-in-out, background 0.2s ease-in-out, max-height 0.2s ease-in-out;
 
-  #vertical-pinned-tabs-container .zen-workspace-tabs-section[active]:not(:has(tab:not([hidden]))) &,
-  #tabbrowser-tabs:not(:has(#tabbrowser-arrowscrollbox .zen-workspace-tabs-section[active] tab:not([hidden]))) & {
+  #vertical-pinned-tabs-container .zen-workspace-tabs-section[hide-separator] & {
     max-height: 0;
     margin: 0 auto;
   }
@@ -369,9 +368,10 @@
 #zen-browser-tabs-wrapper {
   min-height: fit-content;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: clip !important; /* might break custom css with new design, so let's force it */
   height: 100%;
   scrollbar-width: thin;
+  position: relative;
 }
 
 #vertical-pinned-tabs-container {
@@ -379,7 +379,8 @@
   display: flex !important;
   flex-direction: column;
   min-height: fit-content !important;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   max-height: unset !important;
 
   & .tabbrowser-tab:not(:hover) .tab-background:not([selected]):not([multiselected]) {
