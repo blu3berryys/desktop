@@ -15,6 +15,7 @@ on:
         description: 'The branch to build'
         required: true
         type: string
+    workflow_dispatch:
 
 jobs:
   windows-profile-build:
