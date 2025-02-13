@@ -11,11 +11,12 @@ on:
         description: 'The branch to build'
         required: true
         type: string
+  workflow_dispatch:
 
 jobs:
   mac-build:
     name: Unify macOS (Universal)
-    runs-on: 'macos-14'
+    runs-on: macos-14
 
     strategy:
       fail-fast: false
