@@ -22,8 +22,8 @@ importers:
         specifier: ^3.5.0
         version: 3.5.1
       prettier-plugin-sh:
-        specifier: ^0.14.0
-        version: 0.14.0(prettier@3.5.1)
+        specifier: ^0.16.0
+        version: 0.16.0(prettier@3.5.1)
 
 packages:
 
@@ -690,8 +690,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  prettier-plugin-sh@0.14.0:
-    resolution: {integrity: sha512-hfXulj5+zEl/ulrO5kMuuTPKmXvOg0bnLHY1hKFNN/N+/903iZbNp8NyZBTsgI8dtkSgFfAEIQq0IQTyP1ZVFQ==}
+  prettier-plugin-sh@0.16.0:
+    resolution: {integrity: sha512-QaVH0X56IUy9niNczUQ0TxqVezcGzACz9XObbyxyAZ6NU/VCKnR9RUAcETyzCiPgcHKq/tjerCsqxn5nL3yo/w==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       prettier: ^3.0.3
@@ -1608,7 +1608,7 @@ snapshots:
       tar-fs: 2.1.2
       tunnel-agent: 0.6.0
 
-  prettier-plugin-sh@0.14.0(prettier@3.5.1):
+  prettier-plugin-sh@0.16.0(prettier@3.5.1):
     dependencies:
       mvdan-sh: 0.10.1
       prettier: 3.5.1
